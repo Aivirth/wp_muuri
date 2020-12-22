@@ -1,0 +1,14 @@
+.wpMuuriGallery__removeItem{
+    z-index : 9999;
+} 
+  
+.wpMuuriGallery__removeItem > svg,
+.wpMuuriGallery__removeItem > svg > path {
+    position: relative;
+    z-index: -1;
+}
+
+/* #wpMuuriGallery__galleryInputHidden{
+    display: none;
+    visibility: hidden;
+} */
