@@ -178,7 +178,7 @@ class Wp_Muuri_Cpt
      */
     public function register(): void
     {
-        register_post_type($this->name, $this->args);
+        register_post_type($this->domain_text, $this->args);
     }
 
     /**

@@ -71,29 +71,34 @@ class Wp_Muuri_Admin
          * class.
          */
 
-        wp_enqueue_style(
-            `{$this->plugin_name}__uikit-css`,
-            plugin_dir_url(__FILE__) . '/uikit.min.css',
-            [],
-            false,
-            'all'
-        );
+        try {
+            wp_enqueue_style(
+                `{$this->plugin_name}__uikit-css`,
+                plugin_dir_url(__FILE__) . '/uikit.min.css',
+                [],
+                false,
+                'all'
+            );
 
-        wp_enqueue_style(
-            `{$this->plugin_name}__wp-muuri-metaboxes-css`,
-            plugin_dir_url(__FILE__) . '/css/wp_muuri_metaboxes.css',
-            [],
-            false,
-            'all'
-        );
+            wp_enqueue_style(
+                `{$this->plugin_name}__wp-muuri-metaboxes-css`,
+                plugin_dir_url(__FILE__) . '/css/wp_muuri_metaboxes.css',
+                [],
+                false,
+                'all'
+            );
 
-        wp_enqueue_style(
-            $this->plugin_name,
-            plugin_dir_url(__FILE__) . 'css/wp-muuri-admin.css',
-            [],
-            $this->version,
-            'all'
-        );
+            wp_enqueue_style(
+                $this->plugin_name,
+                plugin_dir_url(__FILE__) . 'css/wp-muuri-admin.css',
+                [],
+                $this->version,
+                'all'
+            );
+            //code...
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+        }
     }
 
     /**

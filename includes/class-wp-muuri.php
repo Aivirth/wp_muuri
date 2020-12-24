@@ -143,6 +143,12 @@ class Wp_Muuri
         require_once plugin_dir_path(dirname(__FILE__)) .
             'admin/CPT/class-wp-muuri-cpt.php';
 
+        require_once plugin_dir_path(dirname(__FILE__)) .
+            'admin/CPT/class-wp-muuri-html-form-fields.php';
+
+        require_once plugin_dir_path(dirname(__FILE__)) .
+            'admin/CPT/class-wp-muuri-cpt-metaboxes.php';
+
         $this->loader = new Wp_Muuri_Loader();
     }
 
@@ -271,6 +277,11 @@ class Wp_Muuri
     {
         $labels = [];
         $args = [];
+
+        $cpt_metaboxes = new Wp_Muuri_Cpt_Metaboxes(
+            $this->plugin_name,
+            new Wp_Muuri_html_form_fields()
+        );
 
         $this->cpt = new Wp_Muuri_Cpt(
             $this->plugin_name,

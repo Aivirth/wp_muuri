@@ -1,0 +1,188 @@
+<?php
+
+class Wp_Muuri_html_form_fields
+{
+    /**
+     * Calls the appropriate function based on a field type.
+     */
+    public function sort(array $field)
+    {
+        $name = $field['name'];
+        $label = $field['label'];
+        $type = $field['type'];
+        $value = $field['value'];
+
+        switch ($type) {
+            case 'select':
+                $options = $field['options'];
+                $html = $this->select($value, $name, $label, $options);
+                break;
+
+            case 'radio':
+                $options = $field['options'];
+                $html = $this->radio($value, $name, $label, $options);
+
+                break;
+            case 'number':
+                $min = array_key_exists('min', $field) ? $field['min'] : null;
+                $max = array_key_exists('max', $field) ? $field['max'] : null;
+                $step = array_key_exists('step', $field)
+                    ? $field['step']
+                    : null;
+
+                $html = $this->number($value, $name, $label, $min, $max, $step);
+
+                break;
+
+            case 'text':
+                $html = $this->text($value, $name, $label);
+
+                break;
+
+            default:
+                $html = '';
+                break;
+        }
+
+        return $html;
+    }
+
+    /**
+     * Prints a standard text form field.
+     *
+     * @param string $value
+     * @param string $name
+     * @param string $label
+     * @return string
+     */
+    public function text(string $value, string $name, string $label): string
+    {
+        $html = <<<HTML
+            <div class="uk-margin">
+                <label class="uk-form-label" for="{$name}">{$label}</label>
+                <input class="uk-input" type="text" id="{$name}" value="{$value}" />
+            </div>
+HTML;
+
+        return $html;
+    }
+
+    /**
+     * Prints a standard number form field.
+     *
+     * @param string $value
+     * @param string $name
+     * @param string $label
+     * @param integer $min
+     * @param integer $max
+     * @param integer $step
+     * @return string
+     */
+    public function number(
+        string $value,
+        string $name,
+        string $label,
+        int $min = null,
+        int $max = null,
+        int $step = null
+    ): string {
+        $min = !is_null($min) && is_int($min) ? "min=\"{$min}\"" : '';
+        $max = !is_null($max) && is_int($max) ? "max=\"{$max}\"" : '';
+        $step = !is_null($step) && is_int($step) ? "step=\"{$step}\"" : '';
+
+        $html = <<<HTML
+        <div class="uk-margin">
+            <label class="uk-form-label" for="{$name}">{$label}</label>
+            <input class="uk-input" type="number" {$min} {$max} {$step} id="{$name}" name="{$name}" value="{$value}" />
+       </div>
+HTML;
+
+        return $html;
+    }
+
+    /**
+     * Prints a default radio form field.
+     *
+     * @param integer $value
+     * @param string $name
+     * @param string $label
+     * @param array $options
+     * @return string
+     */
+    public function radio(
+        int $value,
+        string $name,
+        string $label,
+        array $options
+    ): string {
+        $html =
+            '<div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">';
+        $html .= "<div class=\"uk-form-label\">{$label}</div>";
+        $html .= '<div class="uk-form-controls">';
+
+        foreach ($options as $key => $optValue) {
+            $checked = $value === $optValue ? 'checked="checked"' : '';
+            $html .= "<label><input class=\"uk-radio\" type=\"radio\" name=\"{$name}\" {$checked} value=\"{$key}\">{$optValue}</label>";
+        }
+
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Prints a default select form field.
+     *
+     * @param string $value
+     * @param string $name
+     * @param string $label
+     * @param array $options
+     * @return string
+     */
+    public function select(
+        string $value,
+        string $name,
+        string $label,
+        array $options
+    ): string {
+        $html = '<div class="uk-margin">';
+        $html .= "<label class=\"uk-form-label\" for=\"{$name}\">{$label}</label>";
+        $html .= '<div class="uk-form-controls">';
+        $html .= "<select class=\"uk-select\" id=\"{$name}\" name=\"{$name}\">";
+
+        foreach ($options as $key => $optValue) {
+            $selected = $value === $key ? 'selected' : '';
+            $html .= "<option value=\"{$key}\" {$selected}>{$optValue}</option>";
+        }
+
+        $html .= '</select>';
+        $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    /**
+     * Prints a default textarea form field.
+     *
+     * @param string $value
+     * @param string $name
+     * @param string $label
+     * @param array $options
+     * @return string
+     */
+    public function textarea(string $value, string $name, string $label): string
+    {
+        $html = <<<HTML
+            <div class="uk-margin">
+                <label class="uk-form-label" for="{$name}">{$label}</label>
+                <div class="uk-form-controls">
+                    <textarea class="uk-textarea" id="{$name}" name="{$name}" rows="5" placeholder="Textarea">{$value}</textarea>
+                </div>
+            </div>
+HTML;
+
+        return $html;
+    }
+}
