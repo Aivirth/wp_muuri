@@ -3,15 +3,20 @@
 class Wp_Muuri_Cpt_Metaboxes
 {
     private string $cpt_name;
+    private object $fields_renderer;
     private object $fields;
 
-    public function __construct(string $cpt_name, object $htmlFieldsObject)
-    {
+    public function __construct(
+        string $cpt_name,
+        object $fieldsRenderer,
+        object $fields
+    ) {
         if (is_admin()) {
             $this->init_metaboxes();
         }
         $this->cpt_name = $cpt_name;
-        $this->fields = $htmlFieldsObject;
+        $this->fields_renderer = $fieldsRenderer;
+        $this->fields = $fields;
     }
 
     /**
@@ -189,16 +194,20 @@ class Wp_Muuri_Cpt_Metaboxes
 
         $tabs = ['Animations', 'Layout', 'Drag'];
 
-        //> Load fields value
-        $muuriCssItems = isset($custom['muuriCssItems'][0])
-            ? $custom['muuriCssItems'][0]
-            : 'wp_muuri_gallery__' . $post->ID;
+        try {
+            $muuriCssItems = isset($custom['muuriCssItems'][0])
+                ? $custom['muuriCssItems'][0]
+                : 'wp_muuri_gallery__' . $post->ID;
 
-        $muuriCssItemsField = $this->fields->text(
-            $muuriCssItems,
-            'muuriCssItems',
-            'CSS Items'
-        );
+            $muuriCssItemsField = $this->fields_renderer->text(
+                $muuriCssItems,
+                'muuriCssItems',
+                'CSS Items'
+            );
+        } catch (\Throwable $th) {
+            die($th->getMessage());
+        }
+        //> Load fields value
 
         $html = '<div uk-grid>';
         $html .= $muuriCssItemsField;
