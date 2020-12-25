@@ -2,8 +2,19 @@
 
 class Wp_Muuri_Cpt_Metaboxes
 {
+    /**
+     * Current cpt name.
+     */
     private string $cpt_name;
+
+    /**
+     * The class responsible for storing the necessary methods to print html fields to screen.
+     */
     private object $fields_renderer;
+
+    /**
+     * The class responsible for storing the fields configuration to be used by `$fields_renderer`.
+     */
     private object $fields;
 
     public function __construct(
@@ -26,7 +37,6 @@ class Wp_Muuri_Cpt_Metaboxes
      */
     public function add_muuri_configuration_metabox()
     {
-        // die('metabox_fn');
         add_meta_box(
             'wp_muuri_cf_metabox',
             __('Muuri Configuration', $this->cpt_name),
@@ -68,10 +78,10 @@ class Wp_Muuri_Cpt_Metaboxes
         }
 
         //> call all 'save_' methods
-        // $saveMethods = preg_grep('/^save_/', get_class_methods($this));
-        // foreach ($saveMethods as $saveMethod) {
-        //     add_action('save_post', [$this, $saveMethod], 10, 2);
-        // }
+        $saveMethods = preg_grep('/^save_/', get_class_methods($this));
+        foreach ($saveMethods as $saveMethod) {
+            add_action('save_post', [$this, $saveMethod], 10, 2);
+        }
     }
 
     /**
@@ -92,6 +102,12 @@ class Wp_Muuri_Cpt_Metaboxes
         ];
     }
 
+    /**
+     * Verifies permissions.
+     *
+     * @param int $post_ID
+     * @return void
+     */
     private function verify_post_permissions($post_ID)
     {
         $nonce = $this->set_nonce();
@@ -114,47 +130,6 @@ class Wp_Muuri_Cpt_Metaboxes
         //> Check if not a revision.
         if (wp_is_post_revision($post_ID)) {
             return;
-        }
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param [type] $post_ID
-     * @param [type] $post
-     * @return void
-     */
-    public function save_muuri_configuration_metabox($post_ID)
-    {
-        $this->verify_post_permissions($post_ID);
-
-        $cfg_animations = $this->fields->animations();
-        $cfg_layout = $this->fields->layout();
-        $cfg_drag_basic = $this->fields->drag_basic();
-        $cfg_drag_predicate = $this->fields->drag_predicate();
-        $cfg_drag_release = $this->fields->drag_release();
-        $cfg_drag_cssProps = $this->fields->drag_cssProps();
-
-        $fieldsCompositeArray = [
-            $cfg_animations,
-            $cfg_layout,
-            $cfg_drag_basic,
-            $cfg_drag_predicate,
-            $cfg_drag_release,
-            $cfg_drag_cssProps,
-        ];
-
-        //> generate whitelist for post fields
-        $fieldsNames = array_map(function ($fieldCfg) {
-            return $fieldCfg['name'];
-        }, array_merge_recursive(...$fieldsCompositeArray));
-
-        foreach ($fieldsNames as $whiteListedField) {
-            update_post_meta(
-                $post_ID,
-                $whiteListedField,
-                $_POST[$whiteListedField]
-            );
         }
     }
 
@@ -339,5 +314,70 @@ class Wp_Muuri_Cpt_Metaboxes
         $html .= "<textarea id=\"wpMuuriGallery__galleryInputHidden\" name=\"muuriGalleryItems\" >{$galleryItems}</textarea>";
 
         echo $html;
+    }
+
+    /**
+     * Saves current cpt fields to db through update_post_meta().
+     *
+     * Verifies permissions and whitelist for post fields.
+     *
+     * @param int $post_ID
+     * @return void
+     */
+    public function save_muuri_configuration_metabox($post_ID)
+    {
+        $this->verify_post_permissions($post_ID);
+
+        $cfg_animations = $this->fields->animations();
+        $cfg_layout = $this->fields->layout();
+        $cfg_drag_basic = $this->fields->drag_basic();
+        $cfg_drag_predicate = $this->fields->drag_predicate();
+        $cfg_drag_release = $this->fields->drag_release();
+        $cfg_drag_cssProps = $this->fields->drag_cssProps();
+
+        $fieldsCompositeArray = [
+            $cfg_animations,
+            $cfg_layout,
+            $cfg_drag_basic,
+            $cfg_drag_predicate,
+            $cfg_drag_release,
+            $cfg_drag_cssProps,
+        ];
+
+        //> generate whitelist for post fields
+        $fieldsNames = array_map(function ($fieldCfg) {
+            return $fieldCfg['name'];
+        }, array_merge_recursive(...$fieldsCompositeArray));
+
+        foreach ($fieldsNames as $whiteListedField) {
+            update_post_meta(
+                $post_ID,
+                $whiteListedField,
+                $_POST[$whiteListedField]
+            );
+        }
+    }
+
+    /**
+     * Saves current gallery items to db through update_post_meta().
+     *
+     * Verifies permissions and whitelist for post fields.
+     *
+     * @param int $post_ID
+     * @return void
+     */
+    public function save_muuri_gallery_metabox($post_ID)
+    {
+        $this->verify_post_permissions($post_ID);
+
+        $fieldsNames = ['muuriGalleryItems'];
+
+        foreach ($fieldsNames as $whiteListedField) {
+            update_post_meta(
+                $post_ID,
+                $whiteListedField,
+                $_POST[$whiteListedField]
+            );
+        }
     }
 }
