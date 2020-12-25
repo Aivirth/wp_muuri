@@ -1,3 +1,7 @@
+# To be changed later
+
+**plugin not yet ready for production**
+
 === Plugin Name ===
 Contributors: (this should be a list of wordpress.org userid's)
 Donate link: https://aivirth.dev
