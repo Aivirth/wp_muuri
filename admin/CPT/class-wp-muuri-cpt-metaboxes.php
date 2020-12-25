@@ -29,7 +29,7 @@ class Wp_Muuri_Cpt_Metaboxes
         // die('metabox_fn');
         add_meta_box(
             'wp_muuri_cf_metabox',
-            __('Muuri Configuration', 'wp_muuri'),
+            __('Muuri Configuration', $this->cpt_name),
             [$this, 'render_muuri_configuration_metabox'],
             $this->cpt_name,
             'advanced',
@@ -42,17 +42,17 @@ class Wp_Muuri_Cpt_Metaboxes
      *
      * @return void
      */
-    // public function add_muuri_gallery_metabox()
-    // {
-    //     add_meta_box(
-    //         'muuri_gallery_metabox',
-    //         __('Muuri Images', 'wp_muuri'),
-    //         [$this, 'render_muuri_gallery_metabox'],
-    //         $this->CPT_name,
-    //         'advanced',
-    //         'low'
-    //     );
-    // }
+    public function add_muuri_gallery_metabox()
+    {
+        add_meta_box(
+            'muuri_gallery_metabox',
+            __('Muuri Images', $this->cpt_name),
+            [$this, 'render_muuri_gallery_metabox'],
+            $this->CPT_name,
+            'advanced',
+            'low'
+        );
+    }
 
     /**
      * Initializes metaboxes by calling all methods with a prefix of 'add_' and 'save_'
@@ -287,5 +287,59 @@ class Wp_Muuri_Cpt_Metaboxes
         $html .= '</div>';
         echo $html;
         // print_r($post);
+    }
+
+    public function render_muuri_gallery_metabox($post)
+    {
+        $cptPost = get_post_custom($post->ID);
+
+        $galleryItems = isset($cptPost['muuriGalleryItems'][0])
+            ? $cptPost['muuriGalleryItems'][0]
+            : '[]';
+        $galleryItemsDecoded = json_decode($galleryItems, true);
+
+        wp_enqueue_media();
+
+        $html = '<div uk-grid class="uk-margin">
+                    <div class="wpMuuriGallery__container">
+                        <ul id="wpMuuriGallery__list" uk-grid-small uk-child-width-1-2 uk-child-width-1-6@s uk-text-center" uk-sortable="handle: .uk-card" uk-grid>';
+
+        foreach ($galleryItemsDecoded as $item) {
+            $imageID = $item['id'];
+            $imageTitle = $item['title'];
+            $imageSrc = $item['src'];
+            $imageCaption = $item['caption'];
+            $imageAlt = $item['alt'];
+
+            $html .= "<li class=\"wpMuuriGallery__item\" data-gallery-item-id=\"{$imageID}\">
+                        <div class=\"uk-card uk-card-default uk-card-body uk-padding-remove\">
+                            <img
+                            src=\"{$imageSrc}\"
+                            title=\"{$imageTitle}\"
+                            alt=\"{$imageAlt}\"
+                            width=\"150\" height=\"150\"/>
+                            <button
+                            data-gallery-item-id=\"{$imageID}\"
+                            class=\"uk-position-top-right uk-icon-link wpMuuriGallery__removeItem\" uk-icon=\"close\"></button>
+                        </div>
+                    </li>";
+        }
+
+        // Add button
+
+        $html .= '
+        <li>
+            <div class="uk-padding-remove uk-height-1-1 uk-flex uk-flex-center uk-flex-middle">
+                <div id="wpMuuriGallery__add" class="uk-button uk-button-default">
+                    <span class="uk-padding-small" uk-icon="plus-circle"></span>
+                </div>
+            </div>
+        </li>';
+
+        $html .= '</ul>';
+        $html .= '</div>';
+        $html .= "<textarea id=\"wpMuuriGallery__galleryInputHidden\" name=\"muuriGalleryItems\" >{$galleryItems}</textarea>";
+
+        echo $html;
     }
 }

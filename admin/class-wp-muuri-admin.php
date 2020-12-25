@@ -95,7 +95,6 @@ class Wp_Muuri_Admin
                 $this->version,
                 'all'
             );
-            //code...
         } catch (\Throwable $th) {
             echo $th->getMessage();
         }
@@ -135,6 +134,14 @@ class Wp_Muuri_Admin
             ['jquery'],
             $this->version,
             false
+        );
+
+        wp_enqueue_script(
+            "{$this->plugin_name}__wp-muuri-metaboxes_js",
+            plugin_dir_url(__FILE__) . '/js/wp_muuri_metaboxes.js',
+            [],
+            false,
+            true
         );
     }
 }
