@@ -254,7 +254,7 @@ class Wp_Muuri_cpt_fields
         ];
     }
 
-    public function drag__cssProps(): array
+    public function drag_cssProps(): array
     {
         return [
             [

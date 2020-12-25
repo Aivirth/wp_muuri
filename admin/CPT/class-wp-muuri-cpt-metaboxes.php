@@ -166,7 +166,7 @@ class Wp_Muuri_Cpt_Metaboxes
      * @param array $headers
      * @return string
      */
-    private function render_tabs(array $headers): string
+    private function render_tabs_headers(array $headers): string
     {
         $tabsHeaders = '<div class="uk-width-auto@m">';
         $tabsHeaders .=
@@ -182,6 +182,23 @@ class Wp_Muuri_Cpt_Metaboxes
         return $tabsHeaders;
     }
 
+    private function render_tabs(array $tabs)
+    {
+        $html = '<div class="uk-width-expand@m">';
+        $html .= '<ul id="component-tab-left" class="uk-switcher">';
+
+        foreach ($tabs as $tab) {
+            foreach ($tab as $content) {
+                $html .= '<li>' . $content . '</li>';
+            }
+        }
+
+        $html .= '</ul>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
     /**
      * Undocumented function
      *
@@ -192,7 +209,8 @@ class Wp_Muuri_Cpt_Metaboxes
         $this->set_nonce();
         $cptPost = get_post_custom($post->ID);
 
-        $tabs = ['Animations', 'Layout', 'Drag'];
+        $tabsHeaders = ['Animations', 'Layout', 'Drag'];
+        $tabs = $this->render_tabs_headers($tabsHeaders);
 
         try {
             $muuriCssItems = isset($custom['muuriCssItems'][0])
@@ -208,9 +226,64 @@ class Wp_Muuri_Cpt_Metaboxes
             die($th->getMessage());
         }
         //> Load fields value
+        $cfg_animations = $this->fields->animations();
+        $cfg_layout = $this->fields->layout();
+        $cfg_drag_basic = $this->fields->drag_basic();
+        $cfg_drag_predicate = $this->fields->drag_predicate();
+        $cfg_drag_release = $this->fields->drag_release();
+        $cfg_drag_cssProps = $this->fields->drag_cssProps();
 
+        //> Build fields html
+        $animations = '';
+        foreach ($cfg_animations as $field) {
+            $animations .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        $layout = '';
+        foreach ($cfg_layout as $field) {
+            $layout .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        $drag_basic = '';
+        foreach ($cfg_drag_basic as $field) {
+            $drag_basic .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        $drag_predicate = '';
+        foreach ($cfg_drag_predicate as $field) {
+            $drag_predicate .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        $drag_release = '';
+        foreach ($cfg_drag_release as $field) {
+            $drag_release .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        $drag_cssProps = '';
+        foreach ($cfg_drag_cssProps as $field) {
+            $drag_cssProps .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
+        //~ Build content html array
+        // $tabsHeaders = ['Animations', 'Layout', 'Drag'];
+        $tabsContent = [
+            'animations' => [$animations],
+            'layout' => [$layout],
+            'drag' => [
+                $drag_basic,
+                $drag_predicate,
+                $drag_release,
+                $drag_cssProps,
+            ],
+        ];
+
+        //>> Print metabox complete html
         $html = '<div uk-grid>';
         $html .= $muuriCssItemsField;
+        $html .= '<div uk-grid>';
+        $html .= $tabs;
+        $html .= $this->render_tabs($tabsContent);
+        $html .= '</div>';
         $html .= '</div>';
         echo $html;
         // print_r($post);

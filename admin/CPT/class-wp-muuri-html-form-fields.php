@@ -5,29 +5,34 @@ class Wp_Muuri_html_form_fields
     /**
      * Calls the appropriate function based on a field type.
      */
-    public function sort(array $field)
+    public function sort(array $fieldCfg, $post)
     {
-        $name = $field['name'];
-        $label = $field['label'];
-        $type = $field['type'];
-        $value = $field['value'];
+        $name = $fieldCfg['name'];
+        $label = $fieldCfg['label'];
+        $type = $fieldCfg['type'];
+        $default = $fieldCfg['default'];
+        $value = isset($post[$name][0]) ? $post[$name][0] : $default;
 
         switch ($type) {
             case 'select':
-                $options = $field['options'];
+                $options = $fieldCfg['options'];
                 $html = $this->select($value, $name, $label, $options);
                 break;
 
             case 'radio':
-                $options = $field['options'];
+                $options = $fieldCfg['options'];
                 $html = $this->radio($value, $name, $label, $options);
 
                 break;
             case 'number':
-                $min = array_key_exists('min', $field) ? $field['min'] : null;
-                $max = array_key_exists('max', $field) ? $field['max'] : null;
-                $step = array_key_exists('step', $field)
-                    ? $field['step']
+                $min = array_key_exists('min', $fieldCfg)
+                    ? $fieldCfg['min']
+                    : null;
+                $max = array_key_exists('max', $fieldCfg)
+                    ? $fieldCfg['max']
+                    : null;
+                $step = array_key_exists('step', $fieldCfg)
+                    ? $fieldCfg['step']
                     : null;
 
                 $html = $this->number($value, $name, $label, $min, $max, $step);

@@ -120,12 +120,12 @@ class Wp_Muuri_Admin
          */
 
         wp_enqueue_script(
-            `{$this->plugin_name}__uikit-js`,
+            "{$this->plugin_name}__uikit-js",
             plugin_dir_url(__FILE__) . '/js/uikit.min.js'
         );
 
         wp_enqueue_script(
-            `{$this->plugin_name}__uikit-icons`,
+            "{$this->plugin_name}__uikit-icons",
             plugin_dir_url(__FILE__) . '/js/uikit-icons.min.js'
         );
 
