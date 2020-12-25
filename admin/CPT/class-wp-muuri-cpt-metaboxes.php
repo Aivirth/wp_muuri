@@ -124,39 +124,37 @@ class Wp_Muuri_Cpt_Metaboxes
      * @param [type] $post
      * @return void
      */
-    public function save_muuri_configuration_metabox($post_ID, $post)
+    public function save_muuri_configuration_metabox($post_ID)
     {
         $this->verify_post_permissions($post_ID);
 
-        $postWhitelist = [
-            'muuriCssItems',
-            'muuriShowDuration',
-            'muuriShowEasing',
-            'muuriLayoutFillGaps',
-            'muuriLayoutIsHorizontal',
-            'muuriLayoutAlignRight',
-            'muuriLayoutAlignBottom',
-            'muuriLayoutRounding',
-            'muuriLayoutOnResize',
-            'muuriLayoutOnInit',
-            'muuriLayoutDuration',
-            'muuriLayoutEasing',
-            'muuriDragEnabled',
-            'muuriDragContainer',
-            'muuriDragHandle',
-            'muuriDragAxis',
-            'muuriDragSort',
-            // 'muuriDragSortHeuristics',
-            'muuriDragSortPredicate__threshold',
-            'muuriDragSortPredicate__action',
-            'muuriDragSortPredicate__migrateAction',
-            'muuriDragRelease__duration',
-            'muuriDragRelease__easing',
-            'muuriDragRelease__useDragContainer',
+        $cfg_animations = $this->fields->animations();
+        $cfg_layout = $this->fields->layout();
+        $cfg_drag_basic = $this->fields->drag_basic();
+        $cfg_drag_predicate = $this->fields->drag_predicate();
+        $cfg_drag_release = $this->fields->drag_release();
+        $cfg_drag_cssProps = $this->fields->drag_cssProps();
+
+        $fieldsCompositeArray = [
+            $cfg_animations,
+            $cfg_layout,
+            $cfg_drag_basic,
+            $cfg_drag_predicate,
+            $cfg_drag_release,
+            $cfg_drag_cssProps,
         ];
 
-        foreach ($postWhitelist as $postMeta) {
-            update_post_meta($post_ID, $postMeta, $_POST[$postMeta]);
+        //> generate whitelist for post fields
+        $fieldsNames = array_map(function ($fieldCfg) {
+            return $fieldCfg['name'];
+        }, array_merge_recursive(...$fieldsCompositeArray));
+
+        foreach ($fieldsNames as $whiteListedField) {
+            update_post_meta(
+                $post_ID,
+                $whiteListedField,
+                $_POST[$whiteListedField]
+            );
         }
     }
 
