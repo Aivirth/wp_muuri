@@ -83,3 +83,5 @@ function run_wp_muuri()
     $plugin->run();
 }
 run_wp_muuri();
+
+require plugin_dir_path(__FILE__) . 'functions/wp-muuri-gallery-shortcode.php';

@@ -1,4 +1,40 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+.grid {
+    position: relative;
+    width: 48%;
+    background: #ccc;
+    border: 5px solid transparent;
+}
+.item {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    margin: 5px;
+    z-index: 1;
+}
+.item.muuri-item-hidden {
+    z-index: 0;
+}
+.item.muuri-item-releasing {
+    z-index: 2;
+}
+.item.muuri-item-dragging {
+    z-index: 3;
+}
+.item-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: red;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+.grid-2 .item-content {
+    background: green;
+}
+.item.muuri-item-dragging .item-content,
+.item.muuri-item-releasing .item-content {
+    background: blue;
+}

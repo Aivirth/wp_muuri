@@ -1,32 +1,30 @@
-(function( $ ) {
-	'use strict';
+document.addEventListener('DOMContentLoaded', function () {
+    const muuriGridEls = [...document.getElementsByClassName('grid')];
 
-	/**
-	 * All of the code for your public-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+    console.log('test_fetch');
+    const MuuriInstances = [];
+    console.log(muuriGridEls);
 
-})( jQuery );
+    if (muuriGridEls && muuriGridEls.length > 0) {
+        console.log('test_if');
+        muuriGridEls.forEach((gallery, index) => {
+            MuuriInstances[`gallery__${index}`] = new Muuri('.grid');
+        });
+
+        // const galleries = muuriGridEls.getElementsByClassName('item');
+        // if (Array.isArray(galleries) && galleries.length > 0) {
+        //     const MuuriInstances = [];
+
+        //     galleries.forEach((item) => {
+        //         const imageID = item.dataset.wp_muuri_gallery_item_id;
+
+        //         MuuriInstances['g']
+        //         const gallery = 1;
+        //     });
+
+        //     const grid = new Muuri('.grid');
+        // }
+    }
+
+    console.log(MuuriInstances);
+});

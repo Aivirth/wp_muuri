@@ -90,6 +90,7 @@ class Wp_Muuri
         $this->define_public_hooks();
 
         $this->init_cpt();
+        $this->init_shortcodes();
     }
 
     /**
@@ -151,6 +152,9 @@ class Wp_Muuri
 
         require_once plugin_dir_path(dirname(__FILE__)) .
             'admin/CPT/class-wp-muuri-cpt-metaboxes.php';
+
+        require_once plugin_dir_path(dirname(__FILE__)) .
+            'includes/class-wp-muuri-shortcodes.php';
 
         $this->loader = new Wp_Muuri_Loader();
     }
@@ -285,7 +289,7 @@ class Wp_Muuri
         $fields = new Wp_Muuri_cpt_fields();
 
         try {
-            $cpt_metaboxes = new Wp_Muuri_Cpt_Metaboxes(
+            new Wp_Muuri_Cpt_Metaboxes(
                 $this->plugin_name,
                 $fieldsRenderer,
                 $fields
@@ -300,5 +304,10 @@ class Wp_Muuri
             $labels,
             $args
         );
+    }
+
+    public function init_shortcodes()
+    {
+        // new Wp_muuri_shortcodes();
     }
 }
