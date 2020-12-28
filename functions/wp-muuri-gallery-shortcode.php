@@ -41,7 +41,7 @@ function muuri__shortcode__html(array $atts = [])
         die($th->getMessage());
     }
 
-    var_dump((array) $galleryDataForJs);
+    // var_dump((array) $galleryDataForJs);
 
     // print_r($atts);
 
@@ -70,15 +70,22 @@ function print_gallery_html(string $galleryJson)
     //     }]"
     // } }
 
+    //! Temp get image tags
+    $imagesTags = [];
+
     $galleryItems = json_decode($galleryJson, true);
 
-    $html = '<div class="grid">';
+    $html = '<div class="WP_Muuri__gridWrapper">';
+    $html .= print_gallery_filters($galleryItems);
+    $html .= '<div class="grid">';
 
     foreach ($galleryItems as $galleryItem) {
         $ID = $galleryItem['id'];
         $src = $galleryItem['src'];
         $title = $galleryItem['title'];
         $alt = $galleryItem['alt'];
+
+        $imagesTags[$ID] = get_the_tags($ID);
 
         $html .= "<div class=\"item\" data-wp_muuri_gallery_item_id=\"{$ID}\">
                     <div class=\"item-content\">
@@ -87,6 +94,84 @@ function print_gallery_html(string $galleryJson)
                 </div>";
     }
 
+    try {
+        foreach ($imagesTags as $tagsArray) {
+            // print_r($tagsArray);
+            foreach ($tagsArray as $tag) {
+                // print_r($tag);
+                $tagID = $tag->term_id;
+                $tagName = $tag->name;
+                $tagSlug = $tag->slug;
+                $tagCount = $tag->count;
+
+                $sanitizedTagsArr[$tagID]['name'] = $tagName;
+                $sanitizedTagsArr[$tagID]['slug'] = $tagSlug;
+                $sanitizedTagsArr[$tagID]['count'] = $tagCount;
+            }
+        }
+    } catch (\Throwable $th) {
+        die($th->getMessage());
+    }
+
+    echo '<pre>';
+    print_r($imagesTags);
+    print_r($sanitizedTagsArr);
+    echo '</pre>';
+
+    $html .= '</div>';
+    $html .= '</div>';
+
+    return $html;
+}
+
+function print_gallery_filters(array $galleryItems = [])
+{
+    //> Purify tags array
+    $sanitizedTagsArr = [];
+    $allTagsArrayRaw = [];
+    foreach ($galleryItems as $galleryItem) {
+        $ID = $galleryItem['id'];
+        $allTagsArrayRaw[$ID] = get_the_tags($ID);
+    }
+
+    foreach ($allTagsArrayRaw as $tagsArray) {
+        foreach ($tagsArray as $tag) {
+            $tagID = $tag->term_id;
+            $tagName = $tag->name;
+            $tagSlug = $tag->slug;
+            $tagCount = $tag->count;
+
+            $sanitizedTagsArr[$tagID]['name'] = $tagName;
+            $sanitizedTagsArr[$tagID]['slug'] = $tagSlug;
+            $sanitizedTagsArr[$tagID]['count'] = $tagCount;
+        }
+    }
+
+    $filterKeys = [];
+
+    foreach ($sanitizedTagsArr as $tag) {
+        $tagKey = $tag['name'];
+        $tagValue = $tag['slug'];
+        $filterKeys[$tagKey] = $filterKeys[$tagValue];
+    }
+
+    //Todo: Search and sort
+    /**
+     * <div class="control">Search
+     *<input class="search-field form-control" type="text" name="search" placeholder="Enter the fruit name">
+     *</div>
+     */
+
+    $html = '<div class="WP_Muuri__fieldsControl">';
+    $html .= '<div class="control">';
+    $html .= '<select class="WP_Muuri__field WP_Muuri__filter">';
+
+    foreach ($filterKeys as $filterKey => $filterValue) {
+        $html .= "<option value=\"{$filterValue}\">{$filterKey}</option>";
+    }
+
+    $html .= '</select>';
+    $html .= '</div>';
     $html .= '</div>';
 
     return $html;

@@ -145,7 +145,7 @@ class Wp_Muuri_Cpt
                 "{$this->name} description",
                 $this->domain_text
             ),
-            'labels' => $this->cpt_labels,
+            'labels' => $this->labels,
             'menu_icon' => 'dashicons-editor-table',
             'supports' => ['title', 'editor'],
             'taxonomies' => ['wp_muuri'],
