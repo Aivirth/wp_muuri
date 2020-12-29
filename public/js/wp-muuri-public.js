@@ -1,6 +1,16 @@
+/**
+ * Global object for storing Muuri instances.
+ */
 const WP_Muuri = (function () {
+    /**
+     * Stores Muuri instances present in the current page.
+     */
     const MuuriInstances = [];
 
+    /**
+     * Overrides Muuri default params with customs.
+     * @param {*} optionsObj
+     */
     const loadMuuriOptions = (optionsObj) => {
         const optionsObjParsed = {};
 
@@ -115,8 +125,15 @@ const WP_Muuri = (function () {
         return muuriOptions;
     };
 
-    const init = () => {
-        const muuriGridEls = [...document.getElementsByClassName('grid')];
+    /**
+     * Public exposed method.
+     *
+     * Searches all page for supplied classes and initializes Muuri instances.
+     */
+    const init = (cNameSelector) => {
+        const muuriGridEls = [
+            ...document.getElementsByClassName(cNameSelector),
+        ];
         if (muuriGridEls && muuriGridEls.length > 0) {
             muuriGridEls.forEach((gallery, index) => {
                 const currGalleryCfg = wp_muuri_cfg_obj;
@@ -139,10 +156,23 @@ const WP_Muuri = (function () {
     };
 })();
 
+/**
+ * Global object storing the filter functionality of Muuri.
+ */
 const WP_Muuri_filters = (function (WP_Muuri) {
+    /**
+     * Public exposed method.
+     */
     const init = () => {
         const grids = WP_Muuri.instances;
 
+        /**
+         * Calls Muuri.filter.
+         *
+         * Checks current select value against image tags.
+         * @param {*} e
+         * @param {*} muuriObj
+         */
         const gridFilter = (e, muuriObj) => {
             const currValue = e.target.value;
             muuriObj.filter((item) => {
@@ -179,6 +209,6 @@ const WP_Muuri_filters = (function (WP_Muuri) {
 })(WP_Muuri);
 
 document.addEventListener('DOMContentLoaded', function () {
-    WP_Muuri.init();
+    WP_Muuri.init('grid');
     WP_Muuri_filters.init();
 });
