@@ -49,34 +49,18 @@ function muuri__shortcode__html(array $atts = [])
     // $html .= '<hr><pre>' . var_dump($atts) . '</pre>';
     // $html .= '<hr><pre>' . var_dump(get_post_custom($ID)) . '</pre>';
 
-    $html = print_gallery_html($gallery_itemsJson);
+    $html = "<div class=\"WP_Muuri__gridWrapper\" data-gallery_id=\"{$ID}\">";
+    $html .= print_gallery_html($gallery_itemsJson);
+    $html .= '</div>';
 
     return $html;
 }
 
 function print_gallery_html(string $galleryJson)
 {
-    // ["muuriGalleryItems"]=> array(1) {
-    // [0]=> string(223) "[
-    //     {"id":"66",
-    //         "src":"http://localhost/wp-content/uploads/2020/12/80851625_p0.jpg",
-    //         "title":"80851625_p0",
-    //         "alt":""
-    //     },
-    //     {"id":"67",
-    //         "src":"http://localhost/wp-content/uploads/2020/12/80939886_p0.jpg",
-    //         "title":"80939886_p0",
-    //         "alt":""
-    //     }]"
-    // } }
-
-    //! Temp get image tags
-    $imagesTags = [];
-
     $galleryItems = json_decode($galleryJson, true);
 
-    $html = '<div class="WP_Muuri__gridWrapper">';
-    $html .= print_gallery_filters($galleryItems);
+    $html = print_gallery_filters($galleryItems);
     $html .= '<div class="grid">';
 
     foreach ($galleryItems as $galleryItem) {
@@ -85,43 +69,31 @@ function print_gallery_html(string $galleryJson)
         $title = $galleryItem['title'];
         $alt = $galleryItem['alt'];
 
-        $imagesTags[$ID] = get_the_tags($ID);
+        $tags = get_the_tags($ID);
+        $dataSetTags = format_tags_for_dataset($tags);
 
         $html .= "<div class=\"item\" data-wp_muuri_gallery_item_id=\"{$ID}\">
                     <div class=\"item-content\">
-                        <img src=\"{$src}\" src=\"{$alt}\" title=\"{$title}\" alt=\"{$alt}\"/>
+                        <img src=\"{$src}\" src=\"{$alt}\" title=\"{$title}\" alt=\"{$alt}\" data-tags=\"{$dataSetTags}\"/>
                     </div>
                 </div>";
     }
 
-    try {
-        foreach ($imagesTags as $tagsArray) {
-            // print_r($tagsArray);
-            foreach ($tagsArray as $tag) {
-                // print_r($tag);
-                $tagID = $tag->term_id;
-                $tagName = $tag->name;
-                $tagSlug = $tag->slug;
-                $tagCount = $tag->count;
-
-                $sanitizedTagsArr[$tagID]['name'] = $tagName;
-                $sanitizedTagsArr[$tagID]['slug'] = $tagSlug;
-                $sanitizedTagsArr[$tagID]['count'] = $tagCount;
-            }
-        }
-    } catch (\Throwable $th) {
-        die($th->getMessage());
-    }
-
-    echo '<pre>';
-    print_r($imagesTags);
-    print_r($sanitizedTagsArr);
-    echo '</pre>';
-
-    $html .= '</div>';
     $html .= '</div>';
 
     return $html;
+}
+
+function format_tags_for_dataset($wp_tags_raw)
+{
+    $tags = [];
+    foreach ($wp_tags_raw as $tag) {
+        $tags[] = $tag->slug;
+    }
+
+    $tags = implode('|', array_unique($tags));
+
+    return $tags;
 }
 
 function print_gallery_filters(array $galleryItems = [])
@@ -152,7 +124,7 @@ function print_gallery_filters(array $galleryItems = [])
     foreach ($sanitizedTagsArr as $tag) {
         $tagKey = $tag['name'];
         $tagValue = $tag['slug'];
-        $filterKeys[$tagKey] = $filterKeys[$tagValue];
+        $filterKeys[$tagKey] = $tagValue;
     }
 
     //Todo: Search and sort

@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const muuriGridEls = [...document.getElementsByClassName('grid')];
-
+const WP_Muuri = (function () {
     const MuuriInstances = [];
 
     const loadMuuriOptions = (optionsObj) => {
@@ -117,69 +115,70 @@ document.addEventListener('DOMContentLoaded', function () {
         return muuriOptions;
     };
 
-    /*
-    muuriDragAxis: "xy"
-    muuriDragContainer: null
-    muuriDragCssProps__touchAction: "none"
-    muuriDragCssProps__userDrag: "none"
-    muuriDragCssProps__userSelect: "none"
-    muuriDragEnabled: null
-    muuriDragHandle: null
-    muuriDragRelease__duration: "300"
-    muuriDragRelease__easing: "ease"
-    muuriDragRelease__useDragContainer: null
-    muuriDragSort: null
-    muuriDragSortPredicate__action: "move"
-    muuriDragSortPredicate__migrateAction: "move"
-    muuriDragSortPredicate__threshold: "50"
-    muuriGalleryItems: "[{"id":"66","src":"http://localhost/wp-content/uploads/2020/12/80851625_p0.jpg","title":"80851625_p0","alt":""},{"id":"67","src":"http://localhost/wp-content/uploads/2020/12/80939886_p0.jpg","title":"80939886_p0","alt":""}]"
-    muuriHideDuration: "300"
-    muuriHideEasing: "ease"
-    muuriLayoutAlignBottom: null
-    muuriLayoutAlignRight: null
-    muuriLayoutDuration: "300"
-    muuriLayoutEasing: "ease"
-    muuriLayoutFillGaps: null
-    muuriLayoutIsHorizontal: null
-    muuriLayoutOnInit: null
-    muuriLayoutOnResize: null
-    muuriLayoutRounding: null
-    muuriShowDuration: "301"
-    muuriShowEasing: "ease"
-    _edit_last: "1"
-    _edit_lock: "1609016836"
-    */
+    const init = () => {
+        const muuriGridEls = [...document.getElementsByClassName('grid')];
+        if (muuriGridEls && muuriGridEls.length > 0) {
+            muuriGridEls.forEach((gallery, index) => {
+                const currGalleryCfg = wp_muuri_cfg_obj;
 
-    if (muuriGridEls && muuriGridEls.length > 0) {
-        muuriGridEls.forEach((gallery, index) => {
-            const currGalleryCfg = wp_muuri_cfg_obj;
+                const muuriOptions = loadMuuriOptions(currGalleryCfg);
 
-            const muuriOptions = loadMuuriOptions(currGalleryCfg);
+                MuuriInstances[`gallery__${index}`] = new Muuri(
+                    '.grid',
+                    muuriOptions
+                );
+                MuuriInstances[`gallery__${index}`].refreshItems().layout();
+                gallery.classList.add('images-loaded');
+            });
+        }
+    };
 
-            MuuriInstances[`gallery__${index}`] = new Muuri(
-                '.grid',
-                muuriOptions
-            );
+    return {
+        init: init,
+        instances: MuuriInstances,
+    };
+})();
 
-            console.log(MuuriInstances[`gallery__${index}`]);
-            MuuriInstances[`gallery__${index}`].refreshItems().layout();
-            gallery.classList.add('images-loaded');
-        });
+const WP_Muuri_filters = (function (WP_Muuri) {
+    const init = () => {
+        const grids = WP_Muuri.instances;
 
-        // const galleries = muuriGridEls.getElementsByClassName('item');
-        // if (Array.isArray(galleries) && galleries.length > 0) {
-        //     const MuuriInstances = [];
+        const gridFilter = (e, muuriObj) => {
+            const currValue = e.target.value;
+            muuriObj.filter((item) => {
+                const itemTags = item.getElement().querySelector('img').dataset
+                    .tags;
 
-        //     galleries.forEach((item) => {
-        //         const imageID = item.dataset.wp_muuri_gallery_item_id;
+                const parsedTags = itemTags.split('|');
+                return parsedTags.includes(currValue);
+            });
+        };
 
-        //         MuuriInstances['g']
-        //         const gallery = 1;
-        //     });
+        for (const grid in grids) {
+            if (Object.hasOwnProperty.call(grids, grid)) {
+                const gridWrapper = grids[grid]._element.parentElement;
 
-        //     const grid = new Muuri('.grid');
-        // }
-    }
+                const filterField = gridWrapper.querySelector(
+                    '.WP_Muuri__filter'
+                );
 
-    // console.log(MuuriInstances);
+                filterField.addEventListener(
+                    'change',
+                    (e) => {
+                        gridFilter(e, grids[grid]);
+                    },
+                    false
+                );
+            }
+        }
+    };
+
+    return {
+        init: init,
+    };
+})(WP_Muuri);
+
+document.addEventListener('DOMContentLoaded', function () {
+    WP_Muuri.init();
+    WP_Muuri_filters.init();
 });
