@@ -243,7 +243,7 @@ class Wp_Muuri_cpt_fields
             ],
             [
                 'name' => 'muuriDragRelease__useDragContainer',
-                'label' => 'Should the items be sorted during drag?',
+                'label' => 'Use Drag container during release?',
                 'type' => 'radio',
                 'default' => '1',
                 'options' => [

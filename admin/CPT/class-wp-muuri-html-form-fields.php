@@ -65,7 +65,7 @@ class Wp_Muuri_html_form_fields
         $html = <<<HTML
             <div class="uk-margin">
                 <label class="uk-form-label" for="{$name}">{$label}</label>
-                <input class="uk-input" type="text" id="{$name}" value="{$value}" />
+                <input class="uk-input" type="text" id="{$name}" name="{$name}" value="{$value}" />
             </div>
 HTML;
 

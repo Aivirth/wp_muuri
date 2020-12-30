@@ -58,7 +58,7 @@ class Wp_Muuri_Cpt_Metaboxes
             'muuri_gallery_metabox',
             __('Muuri Images', $this->cpt_name),
             [$this, 'render_muuri_gallery_metabox'],
-            $this->CPT_name,
+            $this->cpt_name,
             'advanced',
             'low'
         );
@@ -161,9 +161,15 @@ class Wp_Muuri_Cpt_Metaboxes
         $html .= '<ul id="component-tab-left" class="uk-switcher">';
 
         foreach ($tabs as $tab) {
-            foreach ($tab as $content) {
-                $html .= '<li>' . $content . '</li>';
+            $html .= '<li>';
+
+            foreach ($tab as $key => $content) {
+                if ($key !== array_key_last($tab)) {
+                    $html .= '<hr/>';
+                }
+                $html .= $content;
             }
+            $html .= '</li>';
         }
 
         $html .= '</ul>';
@@ -281,7 +287,7 @@ class Wp_Muuri_Cpt_Metaboxes
             $imageID = $item['id'];
             $imageTitle = $item['title'];
             $imageSrc = $item['src'];
-            $imageCaption = $item['caption'];
+            // $imageCaption = $item['caption'];
             $imageAlt = $item['alt'];
 
             $html .= "<li class=\"wpMuuriGallery__item\" data-gallery-item-id=\"{$imageID}\">
@@ -348,6 +354,8 @@ class Wp_Muuri_Cpt_Metaboxes
         $fieldsNames = array_map(function ($fieldCfg) {
             return $fieldCfg['name'];
         }, array_merge_recursive(...$fieldsCompositeArray));
+
+        // die(print_r($_POST));
 
         foreach ($fieldsNames as $whiteListedField) {
             update_post_meta(
