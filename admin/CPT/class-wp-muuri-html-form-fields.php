@@ -126,7 +126,8 @@ HTML;
         $html .= '<div class="uk-form-controls">';
 
         foreach ($options as $key => $optValue) {
-            $checked = $value === $optValue ? 'checked="checked"' : '';
+            $checked = $value == $optValue ? 'checked="checked"' : '';
+
             $html .= "<label><input class=\"uk-radio\" type=\"radio\" name=\"{$name}\" {$checked} value=\"{$key}\">{$optValue}</label>";
         }
 
