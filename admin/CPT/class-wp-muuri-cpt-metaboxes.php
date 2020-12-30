@@ -164,10 +164,10 @@ class Wp_Muuri_Cpt_Metaboxes
             $html .= '<li>';
 
             foreach ($tab as $key => $content) {
+                $html .= $content;
                 if ($key !== array_key_last($tab)) {
                     $html .= '<hr/>';
                 }
-                $html .= $content;
             }
             $html .= '</li>';
         }
@@ -355,7 +355,7 @@ class Wp_Muuri_Cpt_Metaboxes
             return $fieldCfg['name'];
         }, array_merge_recursive(...$fieldsCompositeArray));
 
-        // die(print_r($_POST));
+        // die('<pre>' . print_r($_POST) . '</pre>');
 
         foreach ($fieldsNames as $whiteListedField) {
             update_post_meta(
