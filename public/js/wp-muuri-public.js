@@ -14,6 +14,7 @@ const WP_Muuri = (function () {
     const loadMuuriOptions = (optionsObj) => {
         const optionsObjParsed = {};
 
+        //! null becomes 0, TODO: maintain null
         for (const option in optionsObj) {
             //> check is property is a string number
             const currValue = optionsObj[option];
@@ -21,6 +22,8 @@ const WP_Muuri = (function () {
                 ? currValue
                 : +currValue;
         }
+
+        console.log(optionsObjParsed);
 
         const muuriOptions = {
             // Initial item elements
@@ -62,8 +65,8 @@ const WP_Muuri = (function () {
 
             // Drag & Drop
             dragEnabled: optionsObjParsed.muuriDragEnabled,
-            dragContainer: null,
-            dragHandle: null,
+            dragContainer: optionsObjParsed.muuriDragContainer,
+            dragHandle: optionsObjParsed.muuriDragHandle,
             dragStartPredicate: {
                 distance: 0,
                 delay: 0,
@@ -76,19 +79,21 @@ const WP_Muuri = (function () {
                 minBounceBackAngle: 1,
             },
             dragSortPredicate: {
-                threshold: 50,
-                action: 'move',
-                migrateAction: 'move',
+                threshold: optionsObjParsed.muuriDragPredicate__threshold,
+                action: optionsObjParsed.muuriDragPredicate__action,
+                migrateAction:
+                    optionsObjParsed.muuriDragPredicate__migradeAction,
             },
             dragRelease: {
-                duration: 300,
-                easing: 'ease',
-                useDragContainer: true,
+                duration: optionsObjParsed.muuriDragRelease__duration,
+                easing: optionsObjParsed.muuriDragRelease__easing,
+                useDragContainer:
+                    optionsObjParsed.muuriDragRelease__useDragContainer,
             },
             dragCssProps: {
-                touchAction: 'none',
-                userSelect: 'none',
-                userDrag: 'none',
+                touchAction: optionsObjParsed.muuriDragCssProps__touchAction,
+                userSelect: optionsObjParsed.muuriDragCssProps__userSelect,
+                userDrag: optionsObjParsed.muuriDragCssProps__userDrag,
                 tapHighlightColor: 'rgba(0, 0, 0, 0)',
                 touchCallout: 'none',
                 contentZooming: 'none',
