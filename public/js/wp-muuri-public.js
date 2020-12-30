@@ -117,14 +117,14 @@ const WP_Muuri = (function () {
             },
 
             // Classnames
-            containerClass: 'muuri',
-            itemClass: 'muuri-item',
-            itemVisibleClass: 'muuri-item-shown',
-            itemHiddenClass: 'muuri-item-hidden',
-            itemPositioningClass: 'muuri-item-positioning',
-            itemDraggingClass: 'muuri-item-dragging',
-            itemReleasingClass: 'muuri-item-releasing',
-            itemPlaceholderClass: 'muuri-item-placeholder',
+            containerClass: optionsObjParsed.muuriContainerClass,
+            itemClass: optionsObjParsed.muuriItemClass,
+            itemVisibleClass: optionsObjParsed.muuriItemVisibleClass,
+            itemHiddenClass: optionsObjParsed.muuriItemHiddenClass,
+            itemPositioningClass: optionsObjParsed.muuriItemPositioningClass,
+            itemDraggingClass: optionsObjParsed.muuriItemDraggingClass,
+            itemReleasingClass: optionsObjParsed.muuriItemReleasingClass,
+            itemPlaceholderClass: optionsObjParsed.muuriItemPlaceholderClass,
         };
 
         return muuriOptions;

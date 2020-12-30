@@ -2,6 +2,60 @@
 
 class Wp_Muuri_cpt_fields
 {
+    public function css_selectors(): array
+    {
+        return [
+            [
+                'name' => 'muuriContainerClass',
+                'label' => 'Container',
+                'type' => 'text',
+                'default' => 'muuri',
+            ],
+            [
+                'name' => 'muuriItemClass',
+                'label' => 'Item',
+                'type' => 'text',
+                'default' => 'muuri-item',
+            ],
+            [
+                'name' => 'muuriItemVisibleClass',
+                'label' => 'Item Visible',
+                'type' => 'text',
+                'default' => 'muuri-item-shown',
+            ],
+            [
+                'name' => 'muuriItemHiddenClass',
+                'label' => 'Item Hidden',
+                'type' => 'text',
+                'default' => 'muuri-item-hidden',
+            ],
+            [
+                'name' => 'muuriItemPositioningClass',
+                'label' => 'Show Duration',
+                'type' => 'text',
+                'default' => 'muuri-item-positioning',
+            ],
+            [
+                'name' => 'muuriItemDraggingClass',
+                'label' => 'Item Dragging',
+                'type' => 'text',
+                'default' => 'muuri-item-dragging',
+            ],
+            [
+                'name' => 'muuriItemReleasingClass',
+                'label' => 'Item Releasing',
+                'type' => 'text',
+                'default' => 'muuri-item-releasing',
+            ],
+            [
+                'name' => 'muuriItemPlaceholderClass',
+                'label' => 'Item Placeholder',
+                'type' => 'text',
+                'default' => 'muuri-item-placeholder',
+            ],
+        ];
+    }
+
     public function animations(): array
     {
         return [

@@ -188,7 +188,7 @@ class Wp_Muuri_Cpt_Metaboxes
         $this->set_nonce();
         $cptPost = get_post_custom($post->ID);
 
-        $tabsHeaders = ['Animations', 'Layout', 'Drag'];
+        $tabsHeaders = ['Css Selectors', 'Animations', 'Layout', 'Drag'];
         $tabs = $this->render_tabs_headers($tabsHeaders);
 
         try {
@@ -205,6 +205,7 @@ class Wp_Muuri_Cpt_Metaboxes
             die($th->getMessage());
         }
         //> Load fields value
+        $cfg_css_selectors = $this->fields->css_selectors();
         $cfg_animations = $this->fields->animations();
         $cfg_layout = $this->fields->layout();
         $cfg_drag_basic = $this->fields->drag_basic();
@@ -213,6 +214,12 @@ class Wp_Muuri_Cpt_Metaboxes
         $cfg_drag_cssProps = $this->fields->drag_cssProps();
 
         //> Build fields html
+
+        $css_selectors = '';
+        foreach ($cfg_css_selectors as $field) {
+            $css_selectors .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
         $animations = '';
         foreach ($cfg_animations as $field) {
             $animations .= $this->fields_renderer->sort($field, $cptPost);
@@ -246,6 +253,7 @@ class Wp_Muuri_Cpt_Metaboxes
         //~ Build content html array
         // $tabsHeaders = ['Animations', 'Layout', 'Drag'];
         $tabsContent = [
+            'css_selectors' => [$css_selectors],
             'animations' => [$animations],
             'layout' => [$layout],
             'drag' => [
