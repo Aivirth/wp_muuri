@@ -39,12 +39,12 @@ const WP_Muuri = (function () {
 
             // Item's visible/hidden state styles
             visibleStyles: {
-                opacity: '1',
-                transform: 'scale(1)',
+                opacity: optionsObjParsed.muuriVisibleStyles__opacity,
+                transform: optionsObjParsed.muuriVisibleStyles__transform,
             },
             hiddenStyles: {
-                opacity: '0',
-                transform: 'scale(0.5)',
+                opacity: optionsObjParsed.muuriHiddenStyles__opacity,
+                transform: optionsObjParsed.muuriHiddenStyles__transform,
             },
 
             // Layout
