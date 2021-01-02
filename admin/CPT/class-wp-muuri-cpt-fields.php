@@ -360,6 +360,48 @@ class Wp_Muuri_cpt_fields
                     'inherit' => 'Inherit',
                 ],
             ],
+            // [
+            //     'name' => 'muuriDragCssProps__tapHighlightColor',
+            //     'label' => 'Tap Highlight color',
+            //     'type' => 'color',
+            //     'default' => 'rgba(0, 0, 0, 0)',
+            // ],
+        ];
+    }
+
+    public function styles(): array
+    {
+        return [
+            [
+                'name' => 'muuriVisibleStyles__opacity',
+                'label' => 'Gallery item visible state opacity style',
+                'type' => 'number',
+                'default' => 1,
+                'min' => 0,
+                'max' => 1,
+                'step' => 0.1,
+            ],
+            [
+                'name' => 'muuriVisibleStyles__transform',
+                'label' => 'Gallery item visible state transform property',
+                'type' => 'text',
+                'default' => 'scale(1)',
+            ],
+            [
+                'name' => 'muuriHiddenStyles__opacity',
+                'label' => 'Gallery item hidden state opacity style',
+                'type' => 'number',
+                'default' => 0,
+                'min' => 0,
+                'max' => 1,
+                'step' => 0.1,
+            ],
+            [
+                'name' => 'muuriHiddenStyles__transform',
+                'label' => 'Gallery item hidden state transform property',
+                'type' => 'text',
+                'default' => 'scale(0.5)',
+            ],
         ];
     }
 }

@@ -188,7 +188,13 @@ class Wp_Muuri_Cpt_Metaboxes
         $this->set_nonce();
         $cptPost = get_post_custom($post->ID);
 
-        $tabsHeaders = ['Css Selectors', 'Animations', 'Layout', 'Drag'];
+        $tabsHeaders = [
+            'Css Selectors',
+            'Animations',
+            'Styles',
+            'Layout',
+            'Drag',
+        ];
         $tabs = $this->render_tabs_headers($tabsHeaders);
 
         try {
@@ -205,13 +211,7 @@ class Wp_Muuri_Cpt_Metaboxes
             die($th->getMessage());
         }
         //> Load fields value
-        $cfg_css_selectors = $this->fields->css_selectors();
-        $cfg_animations = $this->fields->animations();
-        $cfg_layout = $this->fields->layout();
-        $cfg_drag_basic = $this->fields->drag_basic();
-        $cfg_drag_predicate = $this->fields->drag_predicate();
-        $cfg_drag_release = $this->fields->drag_release();
-        $cfg_drag_cssProps = $this->fields->drag_cssProps();
+        extract($this->load_fields_config());
 
         //> Build fields html
 
@@ -250,11 +250,17 @@ class Wp_Muuri_Cpt_Metaboxes
             $drag_cssProps .= $this->fields_renderer->sort($field, $cptPost);
         }
 
+        $styles = '';
+        foreach ($cfg_styles as $field) {
+            $styles .= $this->fields_renderer->sort($field, $cptPost);
+        }
+
         //~ Build content html array
         // $tabsHeaders = ['Animations', 'Layout', 'Drag'];
         $tabsContent = [
             'css_selectors' => [$css_selectors],
             'animations' => [$animations],
+            'styles' => [$styles],
             'layout' => [$layout],
             'drag' => [
                 $drag_basic,
@@ -342,20 +348,17 @@ class Wp_Muuri_Cpt_Metaboxes
     {
         $this->verify_post_permissions($post_ID);
 
-        $cfg_animations = $this->fields->animations();
-        $cfg_layout = $this->fields->layout();
-        $cfg_drag_basic = $this->fields->drag_basic();
-        $cfg_drag_predicate = $this->fields->drag_predicate();
-        $cfg_drag_release = $this->fields->drag_release();
-        $cfg_drag_cssProps = $this->fields->drag_cssProps();
+        extract($this->load_fields_config());
 
         $fieldsCompositeArray = [
+            $css_selectors,
             $cfg_animations,
             $cfg_layout,
             $cfg_drag_basic,
             $cfg_drag_predicate,
             $cfg_drag_release,
             $cfg_drag_cssProps,
+            $cfg_styles,
         ];
 
         //> generate whitelist for post fields
@@ -395,5 +398,33 @@ class Wp_Muuri_Cpt_Metaboxes
                 $_POST[$whiteListedField]
             );
         }
+    }
+
+    /**
+     * Loads fields configurations from $this->fields into a shared array.
+     *
+     * @return array
+     */
+    private function load_fields_config(): array
+    {
+        $cfg_css_selectors = $this->fields->css_selectors();
+        $cfg_animations = $this->fields->animations();
+        $cfg_layout = $this->fields->layout();
+        $cfg_drag_basic = $this->fields->drag_basic();
+        $cfg_drag_predicate = $this->fields->drag_predicate();
+        $cfg_drag_release = $this->fields->drag_release();
+        $cfg_drag_cssProps = $this->fields->drag_cssProps();
+        $cfg_styles = $this->fields->styles();
+
+        return compact(
+            'cfg_css_selectors',
+            'cfg_animations',
+            'cfg_layout',
+            'cfg_drag_basic',
+            'cfg_drag_predicate',
+            'cfg_drag_release',
+            'cfg_drag_cssProps',
+            'cfg_styles'
+        );
     }
 }

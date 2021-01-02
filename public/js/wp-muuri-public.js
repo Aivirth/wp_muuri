@@ -35,7 +35,7 @@ const WP_Muuri = (function () {
 
             // Default hide animation
             hideDuration: optionsObjParsed.muuriHideDuration,
-            hideEasing: 'ease',
+            hideEasing: opptionsObjParsed.muuriHideEasing,
 
             // Item's visible/hidden state styles
             visibleStyles: {

@@ -78,22 +78,22 @@ HTML;
      * @param string $value
      * @param string $name
      * @param string $label
-     * @param integer $min
-     * @param integer $max
-     * @param integer $step
+     * @param float $min
+     * @param float $max
+     * @param float $step
      * @return string
      */
     public function number(
         string $value,
         string $name,
         string $label,
-        int $min = null,
-        int $max = null,
-        int $step = null
+        float $min = null,
+        float $max = null,
+        float $step = null
     ): string {
-        $min = !is_null($min) && is_int($min) ? "min=\"{$min}\"" : '';
-        $max = !is_null($max) && is_int($max) ? "max=\"{$max}\"" : '';
-        $step = !is_null($step) && is_int($step) ? "step=\"{$step}\"" : '';
+        $min = !is_null($min) && is_float($min) ? "min=\"{$min}\"" : '';
+        $max = !is_null($max) && is_float($max) ? "max=\"{$max}\"" : '';
+        $step = !is_null($step) && is_float($step) ? "step=\"{$step}\"" : '';
 
         $html = <<<HTML
         <div class="uk-margin">
@@ -187,6 +187,23 @@ HTML;
                     <textarea class="uk-textarea" id="{$name}" name="{$name}" rows="5" placeholder="Textarea">{$value}</textarea>
                 </div>
             </div>
+HTML;
+
+        return $html;
+    }
+
+    public function color(string $value, string $name, string $label): string
+    {
+        $html = <<<HTML
+        <div class="uk-margin">
+            <label class="uk-form-label" for="{$name}">{$label}</label>
+            <div class="uk-form-controls">
+                <button class="uk-color-picker">
+                    <span class="uk-color-preview"></span>
+                </button>
+                <input type="hidden" name="{$name}" id="{$name}" value="{$value}">
+            </div>
+        </div>
 HTML;
 
         return $html;
