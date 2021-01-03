@@ -137,6 +137,7 @@ function print_gallery_filters(array $galleryItems = [])
     $html = '<div class="WP_Muuri__fieldsControl">';
     $html .= '<div class="control">';
     $html .= '<select class="WP_Muuri__field WP_Muuri__filter">';
+    $html .= '<option value="all">' . __('All', 'wp-muuri') . '</option>';
 
     foreach ($filterKeys as $filterKey => $filterValue) {
         $html .= "<option value=\"{$filterValue}\">{$filterKey}</option>";

@@ -35,7 +35,7 @@ const WP_Muuri = (function () {
 
             // Default hide animation
             hideDuration: optionsObjParsed.muuriHideDuration,
-            hideEasing: opptionsObjParsed.muuriHideEasing,
+            hideEasing: optionsObjParsed.muuriHideEasing,
 
             // Item's visible/hidden state styles
             visibleStyles: {
@@ -181,6 +181,10 @@ const WP_Muuri_filters = (function (WP_Muuri) {
         const gridFilter = (e, muuriObj) => {
             const currValue = e.target.value;
             muuriObj.filter((item) => {
+                if (currValue === 'all') {
+                    return true;
+                }
+
                 const itemTags = item.getElement().querySelector('img').dataset
                     .tags;
 
